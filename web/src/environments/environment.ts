@@ -3,11 +3,11 @@
 export const environment = {
   production: false,
   firebase: {
-    apiKey: '',
-    authDomain: '',
-    projectId: 'moye-website-dev',
-    storageBucket: '',
-    messagingSenderId: '',
-    appId: '',
+    apiKey: 'AIzaSyDuHhALCMUBlOEXjuiSYoEciroNOJ56I5M',
+    authDomain: 'moye-website.firebaseapp.com',
+    projectId: 'moye-website',
+    storageBucket: 'moye-website.firebasestorage.app',
+    messagingSenderId: '778921622672',
+    appId: 'G-SMVWFKSVPN',
   },
 };
