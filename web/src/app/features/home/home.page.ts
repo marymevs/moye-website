@@ -6,7 +6,7 @@ import { Component, ChangeDetectionStrategy } from '@angular/core';
   template: `
     <section class="page">
       <h1>moye</h1>
-      <p class="lead">Placeholder home — hero, latest release, and featured content land here.</p>
+      <p class="lead">hub for moye. solo, merch, engineering work.</p>
     </section>
   `,
   styles: [`
