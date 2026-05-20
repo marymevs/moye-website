@@ -7,7 +7,8 @@
     "seed": "tsx seed-tracks.ts",
     "seed:tracks": "tsx seed-tracks.ts",
     "seed:videos": "tsx seed-videos.ts",
-    "seed:products": "tsx seed-products.ts"
+    "seed:products": "tsx seed-products.ts",
+    "seed:credits": "tsx seed-credits.ts"
   },
   "dependencies": {
     "firebase-admin": "^13.0.0"

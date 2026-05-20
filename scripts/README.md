@@ -146,3 +146,49 @@ Replace them with real product photography when available — drop new JPGs at t
 | `coverFile` | string | Filename inside `scripts/seed/products/` |
 | `stock` | number | Available units. `0` shows as "sold out" in UI. |
 | `order` | number | Ascending sort key. Spaced (10, 20, 30) for easy inserts. |
+
+## seed-credits.ts
+
+Uploads credit cover images to Firebase Storage, then writes the corresponding docs to the Firestore `credits` collection. Powers the `.lore` page (moye's contributions across other artists' work + his own releases).
+
+### Adding a credit
+
+1. Drop a square JPG cover into `scripts/seed/credits/` — e.g. `emit.jpg`.
+2. Add an entry to `scripts/seed/credits.json`:
+   ```json
+   {
+     "id": "emit",
+     "artist": "moye",
+     "title": "EMIT",
+     "kind": "album",
+     "releasedAt": "2024-03-30T00:00:00Z",
+     "coverFile": "emit.jpg",
+     "roles": ["vocals", "production", "mixing", "mastering"],
+     "contributionNote": "1. \"track\", 2. \"track\"",
+     "streamingLink": "https://open.spotify.com/album/..."
+   }
+   ```
+3. Run:
+   ```
+   cd scripts && npm run seed:credits
+   ```
+
+Idempotent — re-running overwrites in place.
+
+### Placeholder cover images
+
+Same convention as `scripts/seed/products/` — the 21 covers shipped with the repo are **placeholders** (dark uniform squares with the project title centered). They're dev fixtures so the page populates immediately. Replace each with the real album artwork when available (sources: albumartworkfinder.com, Deezer, or directly from the artist) by dropping a new JPG at the same filename and re-seeding.
+
+### Manifest schema
+
+| Field | Type | Notes |
+|---|---|---|
+| `id` | string | Firestore doc ID — short kebab-case slug |
+| `artist` | string | Primary artist on the release (often not moye) |
+| `title` | string | Project name |
+| `kind` | `"album"` \| `"single"` | |
+| `releasedAt` | ISO date string | Stored as Firestore Timestamp. Page sorts desc by this. |
+| `coverFile` | string | Filename inside `scripts/seed/credits/` |
+| `roles` | string[] | Any of `"vocals"`, `"production"`, `"mixing"`, `"mastering"` |
+| `contributionNote` | string \| omit | Optional. e.g. `Tracks #1 - #9`, `1. "Tuscan Sun"...` |
+| `streamingLink` | string \| omit | Optional. Spotify / Apple / Bandcamp URL. |
