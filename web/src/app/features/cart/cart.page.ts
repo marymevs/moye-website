@@ -20,7 +20,21 @@ import { CartService } from '../../core/services/cart.service';
               }
               <div class="meta">
                 <span class="title">{{ item.title }}</span>
-                <span class="qty">qty {{ item.qty }}</span>
+                <div class="qty-stepper">
+                  <button
+                    class="step"
+                    type="button"
+                    [attr.aria-label]="item.qty === 1 ? 'remove ' + item.title : 'decrease quantity of ' + item.title"
+                    (click)="cart.decrementQty(item.productId)"
+                  >−</button>
+                  <span class="qty-value">{{ item.qty }}</span>
+                  <button
+                    class="step"
+                    type="button"
+                    [attr.aria-label]="'increase quantity of ' + item.title"
+                    (click)="cart.incrementQty(item.productId)"
+                  >+</button>
+                </div>
               </div>
               <span class="line-price">\${{ formatPrice(item.priceCents * item.qty) }}</span>
               <button class="remove" type="button" (click)="cart.remove(item.productId)">
@@ -70,7 +84,7 @@ import { CartService } from '../../core/services/cart.service';
     .meta {
       display: flex;
       flex-direction: column;
-      gap: 0.25rem;
+      gap: 0.5rem;
       min-width: 0;
     }
     .title {
@@ -80,9 +94,37 @@ import { CartService } from '../../core/services/cart.service';
       overflow: hidden;
       text-overflow: ellipsis;
     }
-    .qty {
+
+    .qty-stepper {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
       font-size: var(--text-small);
       color: var(--color-muted);
+    }
+    .step {
+      background: transparent;
+      border: 1px solid var(--color-border);
+      color: var(--color-ink);
+      width: 1.5rem;
+      height: 1.5rem;
+      border-radius: 4px;
+      padding: 0;
+      font-family: inherit;
+      font-size: var(--text-body);
+      line-height: 1;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .step:hover {
+      border-color: var(--color-ink);
+    }
+    .qty-value {
+      font-variant-numeric: tabular-nums;
+      min-width: 1.5em;
+      text-align: center;
+      color: var(--color-ink);
     }
 
     .line-price {
