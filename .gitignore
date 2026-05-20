@@ -8,3 +8,8 @@ ui-debug.log
 
 # OS
 .DS_Store
+
+# Seed assets — large binaries stay local
+scripts/seed/audio/
+scripts/seed/covers/
+scripts/node_modules/
