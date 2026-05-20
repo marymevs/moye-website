@@ -9,7 +9,7 @@ import { CartService } from '../../core/services/cart.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <nav class="nav">
-      <a class="nav__brand" routerLink="/">moye.world</a>
+      <a class="nav__brand" routerLink="/">moye</a>
       <ul class="nav__list">
         @for (item of items; track item.key) {
           <li>
