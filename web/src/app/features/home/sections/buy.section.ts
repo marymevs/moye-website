@@ -126,13 +126,16 @@ import { ProductDetailModalComponent } from './product-detail.modal';
     .cursor-caption {
       position: fixed;
       pointer-events: none;
-      color: var(--color-muted);
-      font-size: 0.8125rem;
-      font-weight: 400;
+      color: var(--color-ink);
+      font-size: var(--text-small);
+      font-weight: 500;
       font-style: italic;
       letter-spacing: 0.01em;
       white-space: nowrap;
-      text-shadow: 0 0 8px var(--color-bg), 0 0 4px var(--color-bg);
+      text-shadow:
+        0 0 6px var(--color-bg),
+        0 0 6px var(--color-bg),
+        0 0 12px var(--color-bg);
       z-index: 60;
       animation: cursor-caption-in 150ms ease-out;
     }
