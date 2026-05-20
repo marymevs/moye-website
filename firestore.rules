@@ -22,6 +22,11 @@ service cloud.firestore {
       allow write: if false;
     }
 
+    match /mailing_list/{email} {
+      allow create: if true;
+      allow read, update, delete: if false;
+    }
+
     match /{document=**} {
       allow read, write: if false;
     }
