@@ -133,6 +133,7 @@ import { Credit, Role } from '../../core/types/credit';
       }
       .note {
         grid-column: 1 / -1;
+        text-align: right;
         padding-top: 0.125rem;
       }
     }
