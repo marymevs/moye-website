@@ -1,20 +1,17 @@
-import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, ChangeDetectionStrategy, PLATFORM_ID, inject } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
-
-interface Video {
-  youtubeId: string;
-  title: string;
-}
+import { VideosService } from '../../../core/services/videos.service';
 
 @Component({
   selector: 'app-watch-section',
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    @if (videos.length > 0) {
+    @if (videos().length > 0) {
       <section class="watch">
         <h2>.watch</h2>
         <ul class="list">
-          @for (video of videos; track video.youtubeId) {
+          @for (video of videos(); track video.id) {
             <li>
               <div class="frame">
                 <iframe
@@ -75,20 +72,16 @@ interface Video {
 })
 export class WatchSectionComponent {
   private readonly sanitizer = inject(DomSanitizer);
+  private readonly videosService = inject(VideosService);
+  private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
 
-  protected readonly videos: ReadonlyArray<Video> = [
-    { youtubeId: 'B20gNyiF9JA', title: 'nocturnal (video)' },
-    { youtubeId: 'o5hw1BVWmco', title: 'necropolis' },
-    { youtubeId: 'fXsuuzuxWtc', title: 'eternal' },
-    { youtubeId: 'QQlBYFvFito', title: 'pandæmonium' },
-    { youtubeId: 'ZQw0bQfSGe8', title: 'fleshy machinery' },
-    { youtubeId: '4DAs4sgscnk', title: 'nocturnal (visualizer)' },
-    { youtubeId: 'trWWHcViWNc', title: 'allure and pain' },
-    { youtubeId: 'UwgFCLHQpm8', title: 'black narcissus' },
-    { youtubeId: 'I9PfoW-Ea9Q', title: 'phantom bride' },
-    { youtubeId: 'B4K-xLACcrw', title: 'black orpheus' },
-    { youtubeId: 'JKMYzc781Uk', title: 'Vertigo (COVER)' },
-  ];
+  protected readonly videos = this.videosService.videos;
+
+  constructor() {
+    if (this.isBrowser && this.videos().length === 0) {
+      void this.videosService.load();
+    }
+  }
 
   protected embedUrl(id: string): SafeResourceUrl {
     return this.sanitizer.bypassSecurityTrustResourceUrl(

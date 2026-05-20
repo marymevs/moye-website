@@ -4,7 +4,9 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "seed": "tsx seed-tracks.ts"
+    "seed": "tsx seed-tracks.ts",
+    "seed:tracks": "tsx seed-tracks.ts",
+    "seed:videos": "tsx seed-videos.ts"
   },
   "dependencies": {
     "firebase-admin": "^13.0.0"
