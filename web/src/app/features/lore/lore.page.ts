@@ -123,7 +123,7 @@ import { Credit, Role } from '../../core/types/credit';
     @media (min-width: 640px) {
       .row-link {
         grid-template-columns: auto 1fr auto;
-        column-gap: 3rem;
+        column-gap: 6rem;
         row-gap: 0.25rem;
         align-items: baseline;
       }
