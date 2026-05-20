@@ -175,9 +175,11 @@ Uploads credit cover images to Firebase Storage, then writes the corresponding d
 
 Idempotent — re-running overwrites in place.
 
-### Placeholder cover images
+### Cover images
 
-Same convention as `scripts/seed/products/` — the 21 covers shipped with the repo are **placeholders** (dark uniform squares with the project title centered). They're dev fixtures so the page populates immediately. Replace each with the real album artwork when available (sources: albumartworkfinder.com, Deezer, or directly from the artist) by dropping a new JPG at the same filename and re-seeding.
+The 21 covers shipped with the repo are the **real album art** for each credit, extracted from the embedded thumbnails in moye's source discography spreadsheet (`moye.lore - Sheet1.pdf`). They're the same images moye curated himself, so they ship as canonical.
+
+If higher-resolution versions become available later (e.g. from albumartworkfinder.com or directly from each artist), drop new JPGs at the same filename and re-seed.
 
 ### Manifest schema
 
