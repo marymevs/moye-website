@@ -1,0 +1,27 @@
+{
+  "title": "Midnight Blue",
+  "kind": "project",
+  "coverPath": "public/covers/midnight-blue.jpg",
+  "releasedAt": "2026-01-15T00:00:00Z",
+  "roles": ["vocals", "production"],
+  "tracks": [
+    {
+      "title": "Opening",
+      "audioPath": "public/audio/midnight-blue/01-opening.mp3",
+      "durationSec": 187,
+      "order": 1
+    },
+    {
+      "title": "Interlude",
+      "audioPath": "public/audio/midnight-blue/02-interlude.mp3",
+      "durationSec": 96,
+      "order": 2
+    },
+    {
+      "title": "Closing",
+      "audioPath": "public/audio/midnight-blue/03-closing.mp3",
+      "durationSec": 203,
+      "order": 3
+    }
+  ]
+}
