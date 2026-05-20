@@ -25,23 +25,21 @@ import { ProductDetailModalComponent } from './product-detail.modal';
             <button
               type="button"
               class="tile"
+              [class.is-sold-out]="product.stock === 0"
               (click)="openModal(product)"
               [attr.aria-label]="'View ' + product.title"
             >
-              <div class="square-box">
+              <div class="tile-image">
                 <img [src]="product.coverUrl" [alt]="product.title" />
-                <div class="overlay" [class.overlay--sold]="product.stock === 0">
-                  <span class="short-bio">{{ product.shortBio }}</span>
-                  <span class="price">
-                    @if (product.stock === 0) {
-                      sold out
-                    } @else {
-                      \${{ formatPrice(product.priceCents) }}
-                    }
-                  </span>
-                </div>
               </div>
               <span class="title">{{ product.title }}</span>
+              <span class="price">
+                @if (product.stock === 0) {
+                  sold out
+                } @else {
+                  \${{ formatPrice(product.priceCents) }}
+                }
+              </span>
             </button>
           }
         </div>
@@ -63,7 +61,7 @@ import { ProductDetailModalComponent } from './product-detail.modal';
     .grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-      gap: 1.5rem;
+      gap: 2rem;
     }
     .tile {
       display: flex;
@@ -76,53 +74,23 @@ import { ProductDetailModalComponent } from './product-detail.modal';
       min-width: 0;
       font-family: inherit;
     }
-    .tile .square-box {
-      position: relative;
+    .tile-image {
+      aspect-ratio: 1;
       width: 100%;
     }
-    .tile img {
+    .tile-image img {
       width: 100%;
       height: 100%;
       object-fit: contain;
       display: block;
+      transition: transform 0.2s ease;
     }
-    .overlay {
-      position: absolute;
-      inset: 0;
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-end;
-      padding: 0.75rem;
-      gap: 0.25rem;
-      background: linear-gradient(
-        to top,
-        rgba(17, 17, 17, 0.7) 0%,
-        rgba(17, 17, 17, 0.3) 40%,
-        rgba(17, 17, 17, 0) 70%
-      );
-      color: #fafaf7;
-      opacity: 0;
-      transition: opacity 0.2s ease;
+    .tile:hover .tile-image img,
+    .tile:focus-visible .tile-image img {
+      transform: scale(1.03);
     }
-    .tile:hover .overlay,
-    .tile:focus-visible .overlay {
-      opacity: 1;
-    }
-    .overlay--sold {
-      opacity: 1;
-      background: linear-gradient(
-        to top,
-        rgba(17, 17, 17, 0.85) 0%,
-        rgba(17, 17, 17, 0.55) 50%,
-        rgba(17, 17, 17, 0.25) 100%
-      );
-    }
-    .short-bio {
-      font-size: var(--text-small);
-    }
-    .price {
-      font-size: 1rem;
-      font-weight: 500;
+    .tile.is-sold-out .tile-image img {
+      opacity: 0.4;
     }
     .title {
       font-size: var(--text-small);
@@ -131,6 +99,15 @@ import { ProductDetailModalComponent } from './product-detail.modal';
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+      margin-top: 0.25rem;
+    }
+    .price {
+      font-size: var(--text-small);
+      color: var(--color-muted);
+      font-variant-numeric: tabular-nums;
+    }
+    .tile.is-sold-out .price {
+      color: var(--color-border);
     }
   `],
 })
