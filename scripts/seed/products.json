@@ -1,0 +1,82 @@
+[
+  {
+    "id": "sable-hibiscus-vinyl",
+    "title": "sable hibiscus vol. 1 (vinyl)",
+    "shortBio": "180g black vinyl",
+    "longBio": "Limited pressing of sable hibiscus vol. 1 — ad aeternum. 180g black vinyl, gatefold sleeve.",
+    "priceCents": 3500,
+    "coverFile": "sable-hibiscus-vinyl.jpg",
+    "stock": 50,
+    "order": 10
+  },
+  {
+    "id": "sable-hibiscus-cassette",
+    "title": "sable hibiscus vol. 1 (cassette)",
+    "shortBio": "tape, limited run",
+    "longBio": "Limited cassette pressing of sable hibiscus vol. 1 — ad aeternum. Includes download code.",
+    "priceCents": 1800,
+    "coverFile": "sable-hibiscus-cassette.jpg",
+    "stock": 100,
+    "order": 20
+  },
+  {
+    "id": "moye-tee-black",
+    "title": "moye tee (black)",
+    "shortBio": "heavyweight cotton",
+    "longBio": "Heavyweight 100% cotton t-shirt, screen-printed. Sizes S–XXL.",
+    "priceCents": 3000,
+    "coverFile": "moye-tee-black.jpg",
+    "stock": 80,
+    "order": 30
+  },
+  {
+    "id": "sable-hibiscus-poster",
+    "title": "sable hibiscus tour poster",
+    "shortBio": "18\" × 24\", numbered",
+    "longBio": "18\" × 24\" screen-printed tour poster. Hand-numbered, edition of 100.",
+    "priceCents": 2000,
+    "coverFile": "sable-hibiscus-poster.jpg",
+    "stock": 0,
+    "order": 40
+  },
+  {
+    "id": "moye-crewneck",
+    "title": "moye crewneck",
+    "shortBio": "heavyweight fleece",
+    "longBio": "Heavyweight fleece crewneck, embroidered logo. Sizes S–XXL.",
+    "priceCents": 5500,
+    "coverFile": "moye-crewneck.jpg",
+    "stock": 40,
+    "order": 50
+  },
+  {
+    "id": "moye-sticker-pack",
+    "title": "moye sticker pack",
+    "shortBio": "set of 5 vinyl stickers",
+    "longBio": "Set of 5 vinyl stickers — die-cut, weatherproof. Mixed designs from the sable hibiscus era.",
+    "priceCents": 800,
+    "coverFile": "moye-sticker-pack.jpg",
+    "stock": 200,
+    "order": 60
+  },
+  {
+    "id": "sable-hibiscus-tote",
+    "title": "sable hibiscus tote bag",
+    "shortBio": "natural canvas, screen-printed",
+    "longBio": "Heavyweight natural canvas tote, screen-printed sable hibiscus motif. 14\" × 16\".",
+    "priceCents": 2500,
+    "coverFile": "sable-hibiscus-tote.jpg",
+    "stock": 30,
+    "order": 70
+  },
+  {
+    "id": "moye-beanie-charcoal",
+    "title": "moye beanie (charcoal)",
+    "shortBio": "heavyweight knit, embroidered",
+    "longBio": "Heavyweight charcoal knit beanie with small embroidered moye wordmark. One size.",
+    "priceCents": 3000,
+    "coverFile": "moye-beanie-charcoal.jpg",
+    "stock": 3,
+    "order": 80
+  }
+]
