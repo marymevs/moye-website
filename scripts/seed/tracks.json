@@ -1,10 +1,58 @@
 [
   {
-    "id": "mud",
-    "title": "mud.",
-    "audioFile": "mud.mp3",
-    "coverFile": "mud.jpg",
-    "durationSec": 214,
-    "order": 1
+    "id": "allure-and-pain",
+    "title": "allure and pain",
+    "audioFile": "Black Hibiscus & moye - allure and pain.mp3",
+    "durationSec": 284,
+    "order": 10
+  },
+  {
+    "id": "eternal",
+    "title": "eternal",
+    "audioFile": "Black Hibiscus & moye - eternal.mp3",
+    "durationSec": 187,
+    "order": 20
+  },
+  {
+    "id": "fleshy-machinery",
+    "title": "fleshy machinery",
+    "audioFile": "Black Hibiscus & moye - fleshy machinery.mp3",
+    "durationSec": 396,
+    "order": 30
+  },
+  {
+    "id": "necropolis",
+    "title": "necropolis",
+    "audioFile": "Black Hibiscus & moye - necropolis.mp3",
+    "durationSec": 120,
+    "order": 40
+  },
+  {
+    "id": "pandaemonium",
+    "title": "pandæmonium",
+    "audioFile": "Black Hibiscus & moye - pandæmonium.mp3",
+    "durationSec": 355,
+    "order": 50
+  },
+  {
+    "id": "black-orpheus",
+    "title": "black orpheus",
+    "audioFile": "Black Hibiscus, AK(tion)!, & moye - black orpheus.mp3",
+    "durationSec": 213,
+    "order": 60
+  },
+  {
+    "id": "wolfsbane",
+    "title": "wolfsbane",
+    "audioFile": "Black Hibiscus, Yo OG, & moye - wolfsbane.mp3",
+    "durationSec": 151,
+    "order": 70
+  },
+  {
+    "id": "vertigo",
+    "title": "Vertigo (COVER)",
+    "audioFile": "Black Hibiscus, moye, Steph Chow, Low.bō - Vertigo (COVER).mp3",
+    "durationSec": 246,
+    "order": 80
   }
 ]
