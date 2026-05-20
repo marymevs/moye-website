@@ -1,13 +1,30 @@
 import {
   Component,
   ChangeDetectionStrategy,
+  ElementRef,
   PLATFORM_ID,
+  ViewChild,
+  computed,
   inject,
   signal,
 } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { CreditsService } from '../../core/services/credits.service';
 import { Credit, Role } from '../../core/types/credit';
+
+interface Rect {
+  left: number;
+  top: number;
+  width: number;
+  height: number;
+}
+
+interface FlyingClone {
+  kind: 'cover' | 'credit-text';
+  credit: Credit;
+  sourceRect: Rect;
+  currentRect: Rect;
+}
 
 @Component({
   selector: 'app-lore-page',
@@ -17,13 +34,14 @@ import { Credit, Role } from '../../core/types/credit';
       <h1>.lore</h1>
 
       @if (credits().length > 0) {
-        <ul class="list">
+        <ul #listEl class="list">
           @for (credit of credits(); track credit.id) {
             <li
               class="row"
+              [attr.data-credit-id]="credit.id"
               [class.is-active]="hoveredCreditId() === credit.id"
-              (mouseenter)="setHovered(credit.id)"
-              (mouseleave)="setHovered(null)"
+              (mouseenter)="hoverRow(credit, $event)"
+              (mouseleave)="leaveHover()"
             >
               <a
                 class="row-link"
@@ -47,16 +65,34 @@ import { Credit, Role } from '../../core/types/credit';
           }
         </ul>
 
-        <div class="grid">
+        <div #gridEl class="grid">
           @for (credit of credits(); track credit.id) {
             <div
               class="tile"
+              [attr.data-credit-id]="credit.id"
               [class.is-active]="hoveredCreditId() === credit.id"
-              (mouseenter)="setHovered(credit.id)"
-              (mouseleave)="setHovered(null)"
+              (mouseenter)="hoverTile(credit, $event)"
+              (mouseleave)="leaveHover()"
             >
               <img [src]="credit.coverUrl" [alt]="credit.title" />
             </div>
+          }
+        </div>
+      }
+
+      @if (flyingClone(); as fc) {
+        <div
+          class="fly-clone"
+          [class.fly-cover]="fc.kind === 'cover'"
+          [class.fly-text]="fc.kind === 'credit-text'"
+          [style]="cloneStyle()"
+        >
+          @if (fc.kind === 'cover') {
+            <img [src]="fc.credit.coverUrl" [alt]="fc.credit.title" />
+          } @else {
+            <span class="clone-date">{{ formatDate(fc.credit.releasedAt) }}</span>
+            <span class="clone-head">{{ fc.credit.artist }} — {{ fc.credit.title }}</span>
+            <span class="clone-roles">{{ formatRoles(fc.credit.roles) }}</span>
           }
         </div>
       }
@@ -119,7 +155,6 @@ import { Credit, Role } from '../../core/types/credit';
       text-decoration: underline;
     }
 
-    /* One-line layout on wider viewports */
     @media (min-width: 640px) {
       .row-link {
         grid-template-columns: auto 1fr auto;
@@ -160,14 +195,79 @@ import { Credit, Role } from '../../core/types/credit';
       transform: scale(1.15);
       z-index: 1;
     }
+
+    /* Flying clone */
+    .fly-clone {
+      position: fixed;
+      left: var(--fly-left);
+      top: var(--fly-top);
+      width: var(--fly-width);
+      height: var(--fly-height);
+      pointer-events: none;
+      z-index: 100;
+      transition:
+        left 0.35s cubic-bezier(0.34, 1.10, 0.64, 1),
+        top 0.35s cubic-bezier(0.34, 1.10, 0.64, 1),
+        width 0.35s cubic-bezier(0.34, 1.10, 0.64, 1),
+        height 0.35s cubic-bezier(0.34, 1.10, 0.64, 1);
+    }
+    .fly-cover {
+      border-radius: 2px;
+      overflow: hidden;
+      box-shadow: 0 12px 32px rgba(17, 17, 17, 0.12);
+    }
+    .fly-cover img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .fly-text {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      font-size: var(--text-small);
+      color: var(--color-ink);
+      gap: 0.25rem;
+    }
+    .fly-text .clone-date {
+      color: var(--color-muted);
+      font-variant-numeric: tabular-nums;
+    }
+    .fly-text .clone-head {
+      font-weight: 500;
+    }
+    .fly-text .clone-roles {
+      color: var(--color-muted);
+    }
   `],
 })
 export default class LorePage {
   private readonly creditsService = inject(CreditsService);
   private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
 
+  @ViewChild('listEl') private listEl?: ElementRef<HTMLElement>;
+  @ViewChild('gridEl') private gridEl?: ElementRef<HTMLElement>;
+
   protected readonly credits = signal<Credit[]>([]);
   protected readonly hoveredCreditId = signal<string | null>(null);
+  protected readonly flyingClone = signal<FlyingClone | null>(null);
+
+  protected readonly cloneStyle = computed<Record<string, string> | null>(() => {
+    const c = this.flyingClone();
+    if (!c) return null;
+    const r = c.currentRect;
+    return {
+      '--fly-left': `${r.left}px`,
+      '--fly-top': `${r.top}px`,
+      '--fly-width': `${r.width}px`,
+      '--fly-height': `${r.height}px`,
+    };
+  });
+
+  private clearTimer: ReturnType<typeof setTimeout> | null = null;
 
   constructor() {
     if (this.isBrowser) {
@@ -188,8 +288,109 @@ export default class LorePage {
     }
   }
 
-  protected setHovered(id: string | null): void {
-    this.hoveredCreditId.set(id);
+  protected hoverRow(credit: Credit, event: MouseEvent): void {
+    if (!this.isBrowser) return;
+    this.cancelClearTimer();
+    this.hoveredCreditId.set(credit.id);
+
+    const row = event.currentTarget as HTMLElement;
+    const tile = this.gridEl?.nativeElement.querySelector(
+      `[data-credit-id="${credit.id}"]`
+    ) as HTMLElement | null;
+    if (!tile) return;
+
+    const tileRect = tile.getBoundingClientRect();
+    const rowRect = row.getBoundingClientRect();
+
+    const scale = 1.2;
+    const destWidth = tileRect.width * scale;
+    const destHeight = tileRect.height * scale;
+    const gap = 12;
+    const destTop = rowRect.top - destHeight - gap;
+    const destLeft = rowRect.left + rowRect.width / 2 - destWidth / 2;
+
+    this.startFlight(
+      'cover',
+      credit,
+      { left: tileRect.left, top: tileRect.top, width: tileRect.width, height: tileRect.height },
+      { left: destLeft, top: destTop, width: destWidth, height: destHeight }
+    );
+  }
+
+  protected hoverTile(credit: Credit, event: MouseEvent): void {
+    if (!this.isBrowser) return;
+    this.cancelClearTimer();
+    this.hoveredCreditId.set(credit.id);
+
+    const tile = event.currentTarget as HTMLElement;
+    const row = this.listEl?.nativeElement.querySelector(
+      `[data-credit-id="${credit.id}"]`
+    ) as HTMLElement | null;
+    if (!row || !this.gridEl || !tile) return;
+
+    const rowRect = row.getBoundingClientRect();
+    const gridRect = this.gridEl.nativeElement.getBoundingClientRect();
+
+    const scale = 1.2;
+    const destWidth = rowRect.width * scale;
+    const destHeight = rowRect.height * scale;
+    const gap = 24;
+    const destTop = gridRect.top - destHeight - gap;
+    const destLeft = gridRect.left + gridRect.width / 2 - destWidth / 2;
+
+    this.startFlight(
+      'credit-text',
+      credit,
+      { left: rowRect.left, top: rowRect.top, width: rowRect.width, height: rowRect.height },
+      { left: destLeft, top: destTop, width: destWidth, height: destHeight }
+    );
+  }
+
+  protected leaveHover(): void {
+    this.hoveredCreditId.set(null);
+
+    const current = this.flyingClone();
+    if (!current) return;
+
+    // Animate back to source rect
+    this.flyingClone.set({
+      ...current,
+      currentRect: current.sourceRect,
+    });
+
+    // Clear element after the return transition completes
+    this.cancelClearTimer();
+    this.clearTimer = setTimeout(() => {
+      this.flyingClone.set(null);
+      this.clearTimer = null;
+    }, 380);
+  }
+
+  private startFlight(
+    kind: FlyingClone['kind'],
+    credit: Credit,
+    sourceRect: Rect,
+    destRect: Rect
+  ): void {
+    // Render clone at source position first
+    this.flyingClone.set({ kind, credit, sourceRect, currentRect: sourceRect });
+
+    // Then transition to destination on the next paint
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        this.flyingClone.update(c => {
+          if (!c || c.credit.id !== credit.id) return c;
+          return { ...c, currentRect: destRect };
+        });
+      });
+    });
+  }
+
+  private cancelClearTimer(): void {
+    if (this.clearTimer) {
+      clearTimeout(this.clearTimer);
+      this.clearTimer = null;
+    }
   }
 
   protected formatDate(d: Date): string {
