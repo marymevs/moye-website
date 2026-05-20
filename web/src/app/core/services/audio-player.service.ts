@@ -46,7 +46,10 @@ export class AudioPlayerService {
     if (audio.src !== track.audioUrl) {
       audio.src = track.audioUrl;
     }
-    audio.play().catch(() => this.isPlaying.set(false));
+    audio.play().catch(err => {
+      console.warn('[AudioPlayer] play() rejected:', err);
+      this.isPlaying.set(false);
+    });
   }
 
   pause(): void {
@@ -56,7 +59,10 @@ export class AudioPlayerService {
   toggle(): void {
     if (!this.audio || !this.currentTrack()) return;
     if (this.audio.paused) {
-      this.audio.play().catch(() => this.isPlaying.set(false));
+      this.audio.play().catch(err => {
+        console.warn('[AudioPlayer] play() rejected:', err);
+        this.isPlaying.set(false);
+      });
     } else {
       this.audio.pause();
     }
@@ -97,7 +103,7 @@ export class AudioPlayerService {
     if (this.audio) return this.audio;
 
     const a = new Audio();
-    a.preload = 'metadata';
+    a.preload = 'auto';
     a.addEventListener('timeupdate', () => this.position.set(a.currentTime));
     a.addEventListener('play', () => this.isPlaying.set(true));
     a.addEventListener('pause', () => this.isPlaying.set(false));
