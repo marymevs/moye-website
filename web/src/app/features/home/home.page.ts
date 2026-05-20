@@ -1,12 +1,15 @@
 import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { ListenSectionComponent } from './sections/listen.section';
 
 @Component({
   selector: 'app-home-page',
+  imports: [ListenSectionComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <section class="page">
       <h1>moye</h1>
       <p class="lead">hub for moye's solo, collaborative, and engineering work.</p>
+      <app-listen-section />
     </section>
   `,
   styles: [
