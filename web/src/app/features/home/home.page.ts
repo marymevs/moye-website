@@ -5,7 +5,7 @@ import { Component, ChangeDetectionStrategy } from '@angular/core';
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <section class="page">
-      <h1>Moye.world</h1>
+      <h1>moye</h1>
       <p class="lead">Placeholder home — hero, latest release, and featured content land here.</p>
     </section>
   `,
