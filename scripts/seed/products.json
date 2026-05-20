@@ -5,7 +5,7 @@
     "shortBio": "180g black vinyl",
     "longBio": "Limited pressing of sable hibiscus vol. 1 — ad aeternum. 180g black vinyl, gatefold sleeve.",
     "priceCents": 3500,
-    "coverFile": "sable-hibiscus-vinyl.jpg",
+    "coverFile": "sable-hibiscus-vinyl.png",
     "stock": 50,
     "order": 10
   },
@@ -15,7 +15,7 @@
     "shortBio": "tape, limited run",
     "longBio": "Limited cassette pressing of sable hibiscus vol. 1 — ad aeternum. Includes download code.",
     "priceCents": 1800,
-    "coverFile": "sable-hibiscus-cassette.jpg",
+    "coverFile": "sable-hibiscus-cassette.png",
     "stock": 100,
     "order": 20
   },
@@ -25,7 +25,7 @@
     "shortBio": "heavyweight cotton",
     "longBio": "Heavyweight 100% cotton t-shirt, screen-printed. Sizes S–XXL.",
     "priceCents": 3000,
-    "coverFile": "moye-tee-black.jpg",
+    "coverFile": "moye-tee-black.png",
     "stock": 80,
     "order": 30
   },
@@ -35,7 +35,7 @@
     "shortBio": "18\" × 24\", numbered",
     "longBio": "18\" × 24\" screen-printed tour poster. Hand-numbered, edition of 100.",
     "priceCents": 2000,
-    "coverFile": "sable-hibiscus-poster.jpg",
+    "coverFile": "sable-hibiscus-poster.png",
     "stock": 0,
     "order": 40
   },
@@ -45,7 +45,7 @@
     "shortBio": "heavyweight fleece",
     "longBio": "Heavyweight fleece crewneck, embroidered logo. Sizes S–XXL.",
     "priceCents": 5500,
-    "coverFile": "moye-crewneck.jpg",
+    "coverFile": "moye-crewneck.png",
     "stock": 40,
     "order": 50
   },
@@ -55,7 +55,7 @@
     "shortBio": "set of 5 vinyl stickers",
     "longBio": "Set of 5 vinyl stickers — die-cut, weatherproof. Mixed designs from the sable hibiscus era.",
     "priceCents": 800,
-    "coverFile": "moye-sticker-pack.jpg",
+    "coverFile": "moye-sticker-pack.png",
     "stock": 200,
     "order": 60
   },
@@ -65,7 +65,7 @@
     "shortBio": "natural canvas, screen-printed",
     "longBio": "Heavyweight natural canvas tote, screen-printed sable hibiscus motif. 14\" × 16\".",
     "priceCents": 2500,
-    "coverFile": "sable-hibiscus-tote.jpg",
+    "coverFile": "sable-hibiscus-tote.png",
     "stock": 30,
     "order": 70
   },
@@ -75,7 +75,7 @@
     "shortBio": "heavyweight knit, embroidered",
     "longBio": "Heavyweight charcoal knit beanie with small embroidered moye wordmark. One size.",
     "priceCents": 3000,
-    "coverFile": "moye-beanie-charcoal.jpg",
+    "coverFile": "moye-beanie-charcoal.png",
     "stock": 3,
     "order": 80
   }
