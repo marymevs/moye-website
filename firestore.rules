@@ -17,6 +17,11 @@ service cloud.firestore {
       allow write: if false;
     }
 
+    match /credits/{creditId} {
+      allow read: if true;
+      allow write: if false;
+    }
+
     match /{document=**} {
       allow read, write: if false;
     }
