@@ -1,15 +1,17 @@
 import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { ListenSectionComponent } from './sections/listen.section';
+import { WatchSectionComponent } from './sections/watch.section';
 
 @Component({
   selector: 'app-home-page',
-  imports: [ListenSectionComponent],
+  imports: [ListenSectionComponent, WatchSectionComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <section class="page">
       <h1>moye</h1>
       <p class="lead">hub for moye's solo, collaborative, and engineering work.</p>
       <app-listen-section />
+      <app-watch-section />
     </section>
   `,
   styles: [
