@@ -77,13 +77,13 @@ import { Product } from '../../../core/types/product';
     }
     .cover {
       aspect-ratio: 1;
-      background: var(--color-border);
+      background: var(--color-bg);
       overflow: hidden;
     }
     .cover img {
       width: 100%;
       height: 100%;
-      object-fit: cover;
+      object-fit: contain;
       display: block;
     }
     .body {
