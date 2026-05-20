@@ -48,5 +48,35 @@
     "coverFile": "moye-crewneck.jpg",
     "stock": 40,
     "order": 50
+  },
+  {
+    "id": "moye-sticker-pack",
+    "title": "moye sticker pack",
+    "shortBio": "set of 5 vinyl stickers",
+    "longBio": "Set of 5 vinyl stickers — die-cut, weatherproof. Mixed designs from the sable hibiscus era.",
+    "priceCents": 800,
+    "coverFile": "moye-sticker-pack.jpg",
+    "stock": 200,
+    "order": 60
+  },
+  {
+    "id": "sable-hibiscus-tote",
+    "title": "sable hibiscus tote bag",
+    "shortBio": "natural canvas, screen-printed",
+    "longBio": "Heavyweight natural canvas tote, screen-printed sable hibiscus motif. 14\" × 16\".",
+    "priceCents": 2500,
+    "coverFile": "sable-hibiscus-tote.jpg",
+    "stock": 30,
+    "order": 70
+  },
+  {
+    "id": "moye-beanie-charcoal",
+    "title": "moye beanie (charcoal)",
+    "shortBio": "heavyweight knit, embroidered",
+    "longBio": "Heavyweight charcoal knit beanie with small embroidered moye wordmark. One size.",
+    "priceCents": 3000,
+    "coverFile": "moye-beanie-charcoal.jpg",
+    "stock": 3,
+    "order": 80
   }
 ]
