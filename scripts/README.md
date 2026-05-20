@@ -67,3 +67,36 @@ FIREBASE_PROJECT=moye-website-dev STORAGE_BUCKET=moye-website-dev.firebasestorag
 - Audio and cover files under `scripts/seed/audio/` and `scripts/seed/covers/` are gitignored. Only the manifest is committed.
 - The script bypasses Firestore security rules (admin SDK) — that's expected for tooling.
 - Running against the wrong project? Set `FIREBASE_PROJECT` explicitly to be safe.
+
+## seed-videos.ts
+
+Writes YouTube music video metadata to the Firestore `videos` collection. No Storage uploads — YouTube hosts the actual videos.
+
+### Adding a video
+
+1. Add an entry to `scripts/seed/videos.json`:
+   ```json
+   {
+     "id": "necropolis",
+     "youtubeId": "o5hw1BVWmco",
+     "title": "necropolis",
+     "order": 20
+   }
+   ```
+2. Run:
+   ```
+   cd scripts && npm run seed:videos
+   ```
+
+The `youtubeId` is the 11-character ID from the URL (e.g. `https://www.youtube.com/watch?v=o5hw1BVWmco` → `o5hw1BVWmco`).
+
+Idempotent — re-running with the same manifest overwrites in place, no duplicates.
+
+### Manifest schema
+
+| Field | Type | Notes |
+|---|---|---|
+| `id` | string | Firestore doc ID — short slug |
+| `youtubeId` | string | 11-character YouTube video ID |
+| `title` | string | Display caption shown below the embed |
+| `order` | number | Ascending sort key. Spaced (10, 20, 30) so inserts are cheap |
