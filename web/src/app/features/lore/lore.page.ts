@@ -114,7 +114,7 @@ interface FlyingClone {
     .list {
       list-style: none;
       padding: 0;
-      margin: 0 0 6rem;
+      margin: 0 0 12rem;
     }
     .row {
       margin-bottom: 1.5rem;
@@ -224,17 +224,16 @@ interface FlyingClone {
     }
     .fly-text {
       display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      text-align: center;
+      flex-direction: row;
+      align-items: baseline;
+      gap: 2rem;
       font-size: var(--text-small);
       color: var(--color-ink);
-      gap: 0.25rem;
     }
     .fly-text .clone-date {
       color: var(--color-muted);
       font-variant-numeric: tabular-nums;
+      flex-shrink: 0;
     }
     .fly-text .clone-head {
       font-weight: 500;
@@ -331,12 +330,13 @@ export default class LorePage {
     const rowRect = row.getBoundingClientRect();
     const gridRect = this.gridEl.nativeElement.getBoundingClientRect();
 
-    const scale = 1.2;
-    const destWidth = rowRect.width * scale;
-    const destHeight = rowRect.height * scale;
+    // Short, wide strip above the grid — spans the full grid width,
+    // ~60px tall (just enough for one line of text + breathing room).
+    const destWidth = gridRect.width;
+    const destHeight = 60;
     const gap = 24;
     const destTop = gridRect.top - destHeight - gap;
-    const destLeft = gridRect.left + gridRect.width / 2 - destWidth / 2;
+    const destLeft = gridRect.left;
 
     this.startFlight(
       'credit-text',
