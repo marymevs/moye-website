@@ -50,9 +50,9 @@ import { ProductDetailModalComponent } from './product-detail.modal';
 
       @if (hoveredProduct(); as h) {
         <div
-          class="cursor-tooltip"
-          [style.left.px]="cursorX() + 14"
-          [style.top.px]="cursorY() + 14"
+          class="cursor-caption"
+          [style.left.px]="cursorX() + 20"
+          [style.top.px]="cursorY() + 20"
         >
           {{ h.shortBio }}
         </div>
@@ -123,17 +123,22 @@ import { ProductDetailModalComponent } from './product-detail.modal';
     .tile.is-sold-out .price {
       color: var(--color-border);
     }
-    .cursor-tooltip {
+    .cursor-caption {
       position: fixed;
       pointer-events: none;
-      background: var(--color-ink);
-      color: var(--color-bg);
-      padding: 0.375rem 0.625rem;
-      border-radius: 4px;
-      font-size: var(--text-small);
-      font-weight: 500;
+      color: var(--color-muted);
+      font-size: 0.8125rem;
+      font-weight: 400;
+      font-style: italic;
+      letter-spacing: 0.01em;
       white-space: nowrap;
+      text-shadow: 0 0 8px var(--color-bg), 0 0 4px var(--color-bg);
       z-index: 60;
+      animation: cursor-caption-in 150ms ease-out;
+    }
+    @keyframes cursor-caption-in {
+      from { opacity: 0; transform: translateY(-2px); }
+      to { opacity: 1; transform: translateY(0); }
     }
   `],
 })
