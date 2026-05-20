@@ -18,6 +18,7 @@ describe('CartService', () => {
   let cart: CartService;
 
   beforeEach(() => {
+    localStorage.clear();
     TestBed.configureTestingModule({});
     cart = TestBed.inject(CartService);
   });
@@ -90,5 +91,88 @@ describe('CartService', () => {
       coverUrl: 'cover.jpg',
       qty: 1,
     });
+  });
+
+  it('incrementQty bumps the qty for an existing line', () => {
+    cart.add(makeProduct('a'));
+    cart.incrementQty('a');
+    expect(cart.items()[0].qty).toBe(2);
+    expect(cart.itemCount()).toBe(2);
+  });
+
+  it('incrementQty is a no-op when the product isn\'t in the cart', () => {
+    cart.add(makeProduct('a'));
+    cart.incrementQty('does-not-exist');
+    expect(cart.items()).toHaveLength(1);
+    expect(cart.items()[0].qty).toBe(1);
+  });
+
+  it('decrementQty drops the qty by 1', () => {
+    cart.add(makeProduct('a'));
+    cart.add(makeProduct('a'));
+    cart.add(makeProduct('a'));
+    cart.decrementQty('a');
+    expect(cart.items()[0].qty).toBe(2);
+  });
+
+  it('decrementQty removes the line entirely when qty reaches 0', () => {
+    cart.add(makeProduct('a'));
+    cart.add(makeProduct('b'));
+    cart.decrementQty('a');
+    expect(cart.items()).toHaveLength(1);
+    expect(cart.items()[0].productId).toBe('b');
+  });
+
+  it('decrementQty is a no-op when the product isn\'t in the cart', () => {
+    cart.add(makeProduct('a'));
+    cart.decrementQty('does-not-exist');
+    expect(cart.items()).toHaveLength(1);
+  });
+});
+
+describe('CartService persistence', () => {
+  beforeEach(() => {
+    localStorage.clear();
+    TestBed.resetTestingModule();
+  });
+
+  it('persists items to localStorage on every change', () => {
+    TestBed.configureTestingModule({});
+    const cart = TestBed.inject(CartService);
+    cart.add(makeProduct('a'));
+    TestBed.flushEffects();
+    const raw = localStorage.getItem('moye:cart');
+    expect(raw).not.toBeNull();
+    const parsed = JSON.parse(raw as string);
+    expect(parsed).toHaveLength(1);
+    expect(parsed[0].productId).toBe('a');
+  });
+
+  it('hydrates items from localStorage on construction', () => {
+    localStorage.setItem(
+      'moye:cart',
+      JSON.stringify([
+        { productId: 'a', title: 'vinyl', priceCents: 3500, coverUrl: 'cover.jpg', qty: 2 },
+      ])
+    );
+    TestBed.configureTestingModule({});
+    const cart = TestBed.inject(CartService);
+    expect(cart.items()).toHaveLength(1);
+    expect(cart.items()[0].qty).toBe(2);
+    expect(cart.itemCount()).toBe(2);
+  });
+
+  it('ignores corrupt localStorage and starts empty', () => {
+    localStorage.setItem('moye:cart', 'not-json{{{');
+    TestBed.configureTestingModule({});
+    const cart = TestBed.inject(CartService);
+    expect(cart.items()).toEqual([]);
+  });
+
+  it('ignores localStorage entries with the wrong shape', () => {
+    localStorage.setItem('moye:cart', JSON.stringify([{ foo: 'bar' }, { productId: 1 }]));
+    TestBed.configureTestingModule({});
+    const cart = TestBed.inject(CartService);
+    expect(cart.items()).toEqual([]);
   });
 });
