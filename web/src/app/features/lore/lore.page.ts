@@ -6,7 +6,7 @@ import { Component, ChangeDetectionStrategy } from '@angular/core';
   template: `
     <section class="page">
       <h1>.lore</h1>
-      <p class="lead">Discography timeline lands in Phase 4.</p>
+      <p class="lead">credits, productions, and collaborations.</p>
     </section>
   `,
   styles: [`

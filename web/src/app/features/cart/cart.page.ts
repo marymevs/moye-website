@@ -6,7 +6,7 @@ import { Component, ChangeDetectionStrategy } from '@angular/core';
   template: `
     <section class="page">
       <h1>.cart</h1>
-      <p class="lead">Cart UI and checkout flow land in Phase 5.</p>
+      <p class="lead">your cart is empty.</p>
     </section>
   `,
   styles: [`
