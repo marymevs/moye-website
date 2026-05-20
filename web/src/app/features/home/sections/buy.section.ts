@@ -27,6 +27,9 @@ import { ProductDetailModalComponent } from './product-detail.modal';
               class="tile"
               [class.is-sold-out]="product.stock === 0"
               (click)="openModal(product)"
+              (mouseenter)="onHoverStart(product, $event)"
+              (mousemove)="onHoverMove($event)"
+              (mouseleave)="onHoverEnd()"
               [attr.aria-label]="'View ' + product.title"
             >
               <div class="tile-image">
@@ -44,6 +47,17 @@ import { ProductDetailModalComponent } from './product-detail.modal';
           }
         </div>
       </section>
+
+      @if (hoveredProduct(); as h) {
+        <div
+          class="cursor-tooltip"
+          [style.left.px]="cursorX() + 14"
+          [style.top.px]="cursorY() + 14"
+        >
+          {{ h.shortBio }}
+        </div>
+      }
+
       <app-product-detail-modal
         [product]="selectedProduct()"
         (close)="closeModal()"
@@ -109,6 +123,18 @@ import { ProductDetailModalComponent } from './product-detail.modal';
     .tile.is-sold-out .price {
       color: var(--color-border);
     }
+    .cursor-tooltip {
+      position: fixed;
+      pointer-events: none;
+      background: var(--color-ink);
+      color: var(--color-bg);
+      padding: 0.375rem 0.625rem;
+      border-radius: 4px;
+      font-size: var(--text-small);
+      font-weight: 500;
+      white-space: nowrap;
+      z-index: 60;
+    }
   `],
 })
 export class BuySectionComponent {
@@ -120,6 +146,9 @@ export class BuySectionComponent {
 
   protected readonly products = computed(() => this.resolved());
   protected readonly selectedProduct = signal<Product | null>(null);
+  protected readonly hoveredProduct = signal<Product | null>(null);
+  protected readonly cursorX = signal(0);
+  protected readonly cursorY = signal(0);
 
   constructor() {
     if (this.isBrowser) {
@@ -157,5 +186,20 @@ export class BuySectionComponent {
   protected addToCart(product: Product): void {
     this.cart.add(product);
     this.closeModal();
+  }
+
+  protected onHoverStart(product: Product, event: MouseEvent): void {
+    this.hoveredProduct.set(product);
+    this.cursorX.set(event.clientX);
+    this.cursorY.set(event.clientY);
+  }
+
+  protected onHoverMove(event: MouseEvent): void {
+    this.cursorX.set(event.clientX);
+    this.cursorY.set(event.clientY);
+  }
+
+  protected onHoverEnd(): void {
+    this.hoveredProduct.set(null);
   }
 }
