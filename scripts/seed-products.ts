@@ -30,6 +30,20 @@ const app = initializeApp({
 const db = getFirestore(app);
 const bucket = getStorage(app).bucket();
 
+function contentTypeFor(filename: string): string {
+  const ext = filename.toLowerCase().split('.').pop();
+  switch (ext) {
+    case 'png':
+      return 'image/png';
+    case 'webp':
+      return 'image/webp';
+    case 'jpg':
+    case 'jpeg':
+    default:
+      return 'image/jpeg';
+  }
+}
+
 async function uploadIfPresent(localPath: string, destPath: string, contentType: string): Promise<void> {
   if (!existsSync(localPath)) {
     throw new Error(`File not found: ${localPath}`);
@@ -62,7 +76,7 @@ async function seed(): Promise<void> {
     await uploadIfPresent(
       resolve(__dirname, 'seed/products', product.coverFile),
       coverPath,
-      'image/jpeg'
+      contentTypeFor(product.coverFile)
     );
 
     await db.collection('products').doc(product.id).set({
