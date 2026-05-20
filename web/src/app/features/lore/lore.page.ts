@@ -32,16 +32,15 @@ import { Credit, Role } from '../../core/types/credit';
                 [attr.target]="credit.streamingLink ? '_blank' : null"
                 [attr.rel]="credit.streamingLink ? 'noopener' : null"
               >
-                <span class="line head">
-                  <span class="date">{{ formatDate(credit.releasedAt) }}</span>
-                  <span class="sep"> · </span>
+                <span class="date">{{ formatDate(credit.releasedAt) }}</span>
+                <span class="head">
                   <span class="artist">{{ credit.artist }}</span>
                   <span class="sep"> — </span>
                   <span class="title">{{ credit.title }}</span>
                 </span>
-                <span class="line roles">{{ formatRoles(credit.roles) }}</span>
+                <span class="roles">{{ formatRoles(credit.roles) }}</span>
                 @if (credit.contributionNote; as note) {
-                  <span class="line note">{{ note }}</span>
+                  <span class="note">{{ note }}</span>
                 }
               </a>
             </li>
@@ -88,7 +87,9 @@ import { Credit, Role } from '../../core/types/credit';
       margin-bottom: 0;
     }
     .row-link {
-      display: inline-block;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0.25rem;
       text-decoration: none;
       color: var(--color-muted);
       font-size: var(--text-small);
@@ -102,12 +103,9 @@ import { Credit, Role } from '../../core/types/credit';
     .row.is-active .row-link {
       color: var(--color-ink);
       font-weight: 500;
-      transform: scale(1.05);
+      transform: scale(1.02);
     }
-    .line {
-      display: block;
-    }
-    .head {
+    .date {
       font-variant-numeric: tabular-nums;
     }
     .sep {
@@ -119,6 +117,24 @@ import { Credit, Role } from '../../core/types/credit';
     }
     .row-link.is-link:hover .title {
       text-decoration: underline;
+    }
+
+    /* One-line layout on wider viewports */
+    @media (min-width: 640px) {
+      .row-link {
+        grid-template-columns: auto 1fr auto;
+        column-gap: 1.5rem;
+        row-gap: 0.25rem;
+        align-items: baseline;
+      }
+      .roles {
+        justify-self: end;
+        text-align: right;
+      }
+      .note {
+        grid-column: 1 / -1;
+        padding-top: 0.125rem;
+      }
     }
 
     /* Grid */
