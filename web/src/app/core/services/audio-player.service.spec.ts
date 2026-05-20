@@ -97,4 +97,14 @@ describe('AudioPlayerService', () => {
     audioEl().dispatchEvent(new Event('pause'));
     expect(service.isPlaying()).toBe(false);
   });
+
+  it('setQueue with autoPlay=false preloads without playing', () => {
+    const a = makeTrack('a');
+    const b = makeTrack('b');
+    service.setQueue([a, b], 0, false);
+    expect(service.queue()).toEqual([a, b]);
+    expect(service.currentIndex()).toBe(0);
+    expect(service.currentTrack()).toEqual(a);
+    expect(service.isPlaying()).toBe(false);
+  });
 });
