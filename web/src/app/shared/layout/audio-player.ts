@@ -1,41 +1,44 @@
-import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, ChangeDetectionStrategy, computed, inject } from '@angular/core';
 import { AudioPlayerService } from '../../core/services/audio-player.service';
 
 @Component({
   selector: 'app-audio-player',
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    @if (player.currentTrack(); as track) {
-      <div class="bar">
-        @if (track.coverUrl) {
-          <img class="cover" [src]="track.coverUrl" [alt]="track.title" />
+    <div class="bar">
+      @if (track(); as t) {
+        @if (t.coverUrl) {
+          <img class="cover" [src]="t.coverUrl" [alt]="t.title" />
         } @else {
           <div class="cover cover--blank" aria-hidden="true"></div>
         }
-        <div class="meta">
-          <span class="title">{{ track.title }}</span>
-          <div class="scrub">
-            <span class="time">{{ formatTime(player.position()) }}</span>
-            <input
-              type="range"
-              min="0"
-              [max]="maxScrub(track)"
-              [value]="player.position()"
-              (input)="onSeek($event)"
-              aria-label="Seek"
-            />
-            <span class="time">{{ formatTime(maxScrub(track)) }}</span>
-          </div>
-        </div>
-        <div class="controls">
-          <button type="button" (click)="player.prev()" [disabled]="!player.canPrev()" aria-label="Previous track">⏮</button>
-          <button type="button" class="play" (click)="player.toggle()" [attr.aria-label]="player.isPlaying() ? 'Pause' : 'Play'">
-            {{ player.isPlaying() ? '❚❚' : '▶' }}
-          </button>
-          <button type="button" (click)="player.next()" [disabled]="!player.canNext()" aria-label="Next track">⏭</button>
+      } @else {
+        <div class="cover cover--blank" aria-hidden="true"></div>
+      }
+      <div class="meta">
+        <span class="title">{{ titleText() }}</span>
+        <div class="scrub">
+          <span class="time">{{ formatTime(player.position()) }}</span>
+          <input
+            type="range"
+            min="0"
+            [max]="maxScrub()"
+            [value]="player.position()"
+            (input)="onSeek($event)"
+            [disabled]="!track()"
+            aria-label="Seek"
+          />
+          <span class="time">{{ formatTime(maxScrub()) }}</span>
         </div>
       </div>
-    }
+      <div class="controls">
+        <button type="button" (click)="player.prev()" [disabled]="!player.canPrev()" aria-label="Previous track">⏮</button>
+        <button type="button" class="play" (click)="player.toggle()" [disabled]="!track()" [attr.aria-label]="player.isPlaying() ? 'Pause' : 'Play'">
+          {{ player.isPlaying() ? '❚❚' : '▶' }}
+        </button>
+        <button type="button" (click)="player.next()" [disabled]="!player.canNext()" aria-label="Next track">⏭</button>
+      </div>
+    </div>
   `,
   styles: [`
     .bar {
@@ -69,8 +72,10 @@ import { AudioPlayerService } from '../../core/services/audio-player.service';
       overflow: hidden;
       text-overflow: ellipsis;
     }
+    .title.placeholder { color: var(--color-muted); }
     .scrub { display: flex; align-items: center; gap: 0.5rem; }
     .scrub input { flex: 1; }
+    .scrub input[disabled] { opacity: 0.5; }
     .time {
       font-size: 0.75rem;
       color: var(--color-muted);
@@ -93,8 +98,12 @@ import { AudioPlayerService } from '../../core/services/audio-player.service';
 export class AudioPlayerComponent {
   protected readonly player = inject(AudioPlayerService);
 
-  protected maxScrub(track: { durationSec?: number }): number {
-    return track.durationSec ?? 300;
+  protected readonly track = computed(() => this.player.currentTrack());
+
+  protected readonly titleText = computed(() => this.track()?.title ?? '—');
+
+  protected maxScrub(): number {
+    return this.track()?.durationSec ?? 300;
   }
 
   protected formatTime(seconds: number): string {

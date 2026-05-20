@@ -88,13 +88,26 @@ export class AudioPlayerService {
     this.position.set(seconds);
   }
 
-  setQueue(tracks: Track[], startIndex = 0): void {
+  setQueue(tracks: Track[], startIndex = 0, autoPlay = true): void {
     this.queue.set(tracks);
-    if (tracks.length > 0 && startIndex >= 0 && startIndex < tracks.length) {
-      this.play(tracks[startIndex]);
-    } else {
+    if (tracks.length === 0 || startIndex < 0 || startIndex >= tracks.length) {
       this.currentIndex.set(-1);
       this.currentTrack.set(null);
+      return;
+    }
+    if (autoPlay) {
+      this.play(tracks[startIndex]);
+    } else {
+      this.preload(tracks[startIndex], startIndex);
+    }
+  }
+
+  private preload(track: Track, index: number): void {
+    const audio = this.ensureAudio();
+    this.currentIndex.set(index);
+    this.currentTrack.set(track);
+    if (audio && audio.src !== track.audioUrl) {
+      audio.src = track.audioUrl;
     }
   }
 
