@@ -19,7 +19,7 @@ import { WatchSectionComponent } from './sections/watch.section';
   styles: [
     `
       .page {
-        padding: 4rem 1.5rem;
+        padding: 2rem 0.5rem;
         max-width: 64rem;
         margin: 0 auto;
       }
