@@ -3,16 +3,22 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { TracksService, TrackRecord } from './tracks.service';
 import { FIRESTORE, FIREBASE_STORAGE } from '../firebase.providers';
 
+vi.mock('firebase/analytics', () => ({
+  initializeAnalytics: () => null,
+}));
+
 vi.mock('firebase/storage', () => ({
   ref: (storage: unknown, path: string) => ({ _storage: storage, _path: path }),
   getDownloadURL: (r: { _path: string }) =>
     Promise.resolve(`https://storage.example.com/${r._path}?alt=media`),
 }));
 
-vi.mock('firebase/firestore', async () => {
-  const actual = await vi.importActual<typeof import('firebase/firestore')>('firebase/firestore');
-  return { ...actual, collection: vi.fn(), getDocs: vi.fn(), orderBy: vi.fn(), query: vi.fn() };
-});
+vi.mock('firebase/firestore', () => ({
+  collection: vi.fn(),
+  getDocs: vi.fn(),
+  orderBy: vi.fn(),
+  query: vi.fn(),
+}));
 
 const record: TrackRecord = {
   id: 'mud',

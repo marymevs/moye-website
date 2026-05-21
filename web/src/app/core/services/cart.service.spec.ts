@@ -14,11 +14,42 @@ const makeProduct = (id: string, overrides: Partial<Product> = {}): Product => (
   ...overrides,
 });
 
+/**
+ * Vitest's test environment provides a `localStorage` global but the
+ * implementation can be partial (missing methods like .clear()). Install
+ * a complete in-memory shim before each test so CartService's persistence
+ * code paths have a working API.
+ */
+function installLocalStorageMock(): void {
+  const store = new Map<string, string>();
+  const mock: Storage = {
+    getItem: key => store.get(key) ?? null,
+    setItem: (key, value) => {
+      store.set(key, String(value));
+    },
+    removeItem: key => {
+      store.delete(key);
+    },
+    clear: () => {
+      store.clear();
+    },
+    key: index => Array.from(store.keys())[index] ?? null,
+    get length() {
+      return store.size;
+    },
+  };
+  Object.defineProperty(globalThis, 'localStorage', {
+    value: mock,
+    writable: true,
+    configurable: true,
+  });
+}
+
 describe('CartService', () => {
   let cart: CartService;
 
   beforeEach(() => {
-    localStorage.clear();
+    installLocalStorageMock();
     TestBed.configureTestingModule({});
     cart = TestBed.inject(CartService);
   });
@@ -132,7 +163,7 @@ describe('CartService', () => {
 
 describe('CartService persistence', () => {
   beforeEach(() => {
-    localStorage.clear();
+    installLocalStorageMock();
     TestBed.resetTestingModule();
   });
 
