@@ -10,7 +10,7 @@ import { WatchSectionComponent } from './sections/watch.section';
   template: `
     <section class="page">
       <h1>moye</h1>
-      <p class="lead">hub for moye's solo, collaborative, and engineering work.</p>
+      <p class="lead">reified thoughts.</p>
       <app-buy-section />
       <app-listen-section />
       <app-watch-section />
