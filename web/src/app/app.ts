@@ -5,6 +5,7 @@ import { NavComponent } from './shared/layout/nav';
 import { FooterComponent } from './shared/layout/footer';
 import { AudioPlayerComponent } from './shared/layout/audio-player';
 import { MailingListModalComponent } from './shared/mailing-list-modal';
+import { ContactModalComponent } from './shared/contact-modal';
 import { AudioPlayerService } from './core/services/audio-player.service';
 import { TracksService } from './core/services/tracks.service';
 import { MailingListService } from './core/services/mailing-list.service';
@@ -19,6 +20,7 @@ const FIRST_VISIT_POPUP_DELAY_MS = 10_000;
     FooterComponent,
     AudioPlayerComponent,
     MailingListModalComponent,
+    ContactModalComponent,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './app.html',
