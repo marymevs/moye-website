@@ -17,7 +17,7 @@ import { CartService } from '../../core/services/cart.service';
     </section>
   `,
   styles: [`
-    .page { padding: 6rem 1.5rem; max-width: 48rem; margin: 0 auto; }
+    .page { padding: 1rem 0.5rem; max-width: 64rem; margin: 0 auto; }
     h1 { font-size: clamp(2.5rem, 6vw, 4.5rem); margin: 0 0 1rem; letter-spacing: -0.02em; }
     .lead { color: var(--color-muted); font-size: 1.125rem; margin: 0 0 2rem; }
     .links a { color: var(--color-ink); }
