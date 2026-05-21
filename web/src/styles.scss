@@ -3,7 +3,12 @@
   --color-muted: #6b6560;
   --color-bg: #fafaf7;
   --color-border: #e5e1da;
-  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+  // Roboto Mono — monospace base font. Gives the site a technical /
+  // production-coded feel that pairs with the dot-prefix section names
+  // (.world / .lore / .cart) and the editorial timestamp formats (YY-MM-DD).
+  // Kept as `--font-sans` for now to avoid a rename refactor; treat it
+  // semantically as "the primary site font" regardless of classification.
+  --font-sans: 'Roboto Mono', 'SF Mono', 'Menlo', 'Consolas', monospace;
 
   --text-h1: clamp(2.5rem, 6vw, 4rem);
   --text-h2: clamp(1.5rem, 3vw, 2rem);
