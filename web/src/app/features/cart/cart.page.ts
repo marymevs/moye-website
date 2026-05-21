@@ -114,7 +114,7 @@ import { CheckoutService } from '../../core/services/checkout.service';
       }
       h1 {
         font-size: clamp(2.5rem, 6vw, 4.5rem);
-        margin: 0 0 1rem;
+        margin: 0 0 1rem -0.25em;
         letter-spacing: -0.02em;
       }
       .lead {
