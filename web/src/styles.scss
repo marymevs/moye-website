@@ -27,10 +27,15 @@ body {
   background: var(--color-bg);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  cursor: url('/cursors/default.svg'), auto;
+  // Custom cursors with explicit (0, 0) hotspots — the tip of the arrow / top-
+  // left of the pointer shape. Without explicit coordinates, browsers vary in
+  // their default (Chrome treats top-left as the click point, Safari sometimes
+  // centers). The `, auto` and `, pointer` fallbacks kick in if the SVG fails
+  // to load or the browser doesn't support SVG cursors.
+  cursor: url('/cursors/default.svg') 0 0, auto;
 }
 
-a, button { cursor: url('/cursors/hover.svg'), pointer; }
+a, button { cursor: url('/cursors/hover.svg') 0 0, pointer; }
 
 a { color: inherit; }
 
