@@ -24,10 +24,20 @@ html, body {
   padding: 0;
 }
 
+// Pull the root font-size down from the browser default of 16px to 15px.
+// Every rem-based size (font sizes, paddings, margins, gaps in the type
+// scale) scales down proportionally. Px-based dimensions (grid tile
+// minmax, image sizes, fixed layouts) stay the same. The result is
+// denser text + tighter spacing without re-touching every component —
+// the site reads less "large-print book," more editorial.
+html {
+  font-size: 15px;
+}
+
 body {
   font-family: var(--font-sans);
   font-size: var(--text-body);
-  line-height: 1.5;
+  line-height: 1.45;
   color: var(--color-ink);
   background: var(--color-bg);
   -webkit-font-smoothing: antialiased;
