@@ -108,7 +108,7 @@ import { CheckoutService } from '../../core/services/checkout.service';
   styles: [
     `
       .page {
-        padding: 1rem 0.5rem;
+        padding: 2rem 0.5rem;
         max-width: 64rem;
         margin: 0 auto;
       }
