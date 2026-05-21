@@ -1,16 +1,20 @@
 import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
 import { MailingListService } from '../../core/services/mailing-list.service';
+import { ContactService } from '../../core/services/contact.service';
 
 @Component({
   selector: 'app-footer',
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <footer class="footer">
-      <button
-        class="link"
-        type="button"
-        (click)="mailingList.open()"
-      >join the list</button>
+      <div class="links">
+        <button class="link" type="button" (click)="mailingList.open()">
+          join the list
+        </button>
+        <button class="link" type="button" (click)="contact.open()">
+          contact
+        </button>
+      </div>
       <small class="copyright">&copy; {{ year }} moye</small>
     </footer>
   `,
@@ -24,6 +28,11 @@ import { MailingListService } from '../../core/services/mailing-list.service';
       justify-content: space-between;
       gap: 1rem;
       flex-wrap: wrap;
+    }
+    .links {
+      display: flex;
+      gap: 1.5rem;
+      align-items: center;
     }
     .link {
       background: transparent;
@@ -43,5 +52,6 @@ import { MailingListService } from '../../core/services/mailing-list.service';
 })
 export class FooterComponent {
   protected readonly mailingList = inject(MailingListService);
+  protected readonly contact = inject(ContactService);
   protected readonly year = new Date().getFullYear();
 }

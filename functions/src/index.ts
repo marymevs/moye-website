@@ -207,3 +207,39 @@ export const stripeWebhook = onRequest(
     res.status(200).send('ok');
   }
 );
+
+const ContactInput = z.object({
+  name: z.string().min(1).max(100),
+  email: z.string().email(),
+  subject: z.string().min(1).max(200),
+  body: z
+    .string()
+    .min(1)
+    .refine(
+      v => v.trim().split(/\s+/).filter(Boolean).length <= 100,
+      'body exceeds 100-word limit'
+    ),
+});
+
+/**
+ * Accepts a contact form submission, validates it, writes to
+ * `contact_messages`. No email sent (#69 tracks that). Returns
+ * `{ ok: true }` on success.
+ */
+export const submitContact = onCall({ region: REGION }, async request => {
+  const parsed = ContactInput.safeParse(request.data);
+  if (!parsed.success) {
+    throw new HttpsError('invalid-argument', 'Invalid contact input', parsed.error.flatten());
+  }
+  const { name, email, subject, body } = parsed.data;
+
+  await db.collection('contact_messages').add({
+    name: name.trim(),
+    email: email.toLowerCase().trim(),
+    subject: subject.trim(),
+    body: body.trim(),
+    createdAt: FieldValue.serverTimestamp(),
+  });
+
+  return { ok: true };
+});
