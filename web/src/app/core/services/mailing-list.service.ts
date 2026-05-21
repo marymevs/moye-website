@@ -47,16 +47,35 @@ export class MailingListService {
   async subscribe(name: string, email: string, city: string): Promise<void> {
     const lowercaseEmail = email.toLowerCase().trim();
     const cleanCity = city.trim();
-    await setDoc(
-      doc(this.firestore, 'mailing_list', lowercaseEmail),
-      {
-        email: lowercaseEmail,
-        name: name.trim(),
-        city: cleanCity.length > 0 ? cleanCity : null,
-        source: 'popup',
-        createdAt: serverTimestamp(),
-      },
-      { merge: true }
+    try {
+      await setDoc(
+        doc(this.firestore, 'mailing_list', lowercaseEmail),
+        {
+          email: lowercaseEmail,
+          name: name.trim(),
+          city: cleanCity.length > 0 ? cleanCity : null,
+          source: 'popup',
+          createdAt: serverTimestamp(),
+        },
+        { merge: true }
+      );
+    } catch (err) {
+      // The mailing_list rule allows `create` but denies `update`. If the
+      // email already exists (e.g. visitor previously opted in via checkout
+      // newsletter, or submitted via the popup before), setDoc is treated as
+      // an update and gets permission-denied. Treat that as success — they're
+      // already subscribed, no further work needed. Surface any other error.
+      if (this.isPermissionDenied(err)) return;
+      throw err;
+    }
+  }
+
+  private isPermissionDenied(err: unknown): boolean {
+    return (
+      err !== null &&
+      typeof err === 'object' &&
+      'code' in err &&
+      (err as { code: unknown }).code === 'permission-denied'
     );
   }
 }
