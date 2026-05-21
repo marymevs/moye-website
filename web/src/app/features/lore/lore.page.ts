@@ -98,150 +98,152 @@ interface FlyingClone {
       }
     </section>
   `,
-  styles: [`
-    .page {
-      padding: 4rem 1.5rem;
-      max-width: 56rem;
-      margin: 0 auto;
-    }
-    h1 {
-      font-size: clamp(2.5rem, 6vw, 4.5rem);
-      margin: 0 0 3rem;
-      letter-spacing: -0.02em;
-    }
-
-    /* List */
-    .list {
-      list-style: none;
-      padding: 0;
-      margin: 0 0 12rem;
-    }
-    .row {
-      margin-bottom: 1.5rem;
-    }
-    .row:last-child {
-      margin-bottom: 0;
-    }
-    .row-link {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 0.25rem;
-      text-decoration: none;
-      color: var(--color-muted);
-      font-size: var(--text-small);
-      line-height: 1.5;
-      transform-origin: left center;
-      transition:
-        color 0.15s ease,
-        font-weight 0.15s ease,
-        transform 0.15s ease;
-    }
-    .row.is-active .row-link {
-      color: var(--color-ink);
-      font-weight: 500;
-      transform: scale(1.02);
-    }
-    .date {
-      font-variant-numeric: tabular-nums;
-    }
-    .sep {
-      color: var(--color-border);
-      padding: 0 0.05rem;
-    }
-    .note {
-      font-style: italic;
-    }
-    .row-link.is-link:hover .title {
-      text-decoration: underline;
-    }
-
-    @media (min-width: 640px) {
-      .row-link {
-        grid-template-columns: auto 1fr auto;
-        column-gap: 6rem;
-        row-gap: 0.25rem;
-        align-items: baseline;
+  styles: [
+    `
+      .page {
+        padding: 2rem 0.5rem;
+        max-width: 64rem;
+        margin: 0 auto;
       }
-      .roles {
-        justify-self: end;
-        text-align: right;
+      h1 {
+        font-size: clamp(2.5rem, 6vw, 4.5rem);
+        margin: 0 0 3rem -0.25em;
+        letter-spacing: -0.02em;
+      }
+
+      /* List */
+      .list {
+        list-style: none;
+        padding: 0;
+        margin: 0 0 12rem;
+      }
+      .row {
+        margin-bottom: 1.5rem;
+      }
+      .row:last-child {
+        margin-bottom: 0;
+      }
+      .row-link {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 0.25rem;
+        text-decoration: none;
+        color: var(--color-muted);
+        font-size: var(--text-small);
+        line-height: 1.5;
+        transform-origin: left center;
+        transition:
+          color 0.15s ease,
+          font-weight 0.15s ease,
+          transform 0.15s ease;
+      }
+      .row.is-active .row-link {
+        color: var(--color-ink);
+        font-weight: 500;
+        transform: scale(1.02);
+      }
+      .date {
+        font-variant-numeric: tabular-nums;
+      }
+      .sep {
+        color: var(--color-border);
+        padding: 0 0.05rem;
       }
       .note {
-        grid-column: 1 / -1;
-        text-align: right;
-        padding-top: 0.125rem;
+        font-style: italic;
       }
-    }
+      .row-link.is-link:hover .title {
+        text-decoration: underline;
+      }
 
-    /* Grid */
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-      gap: 0.5rem;
-    }
-    .tile {
-      aspect-ratio: 1;
-      position: relative;
-      transition: transform 0.2s ease;
-    }
-    .tile img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-      border-radius: 2px;
-    }
-    .tile.is-active {
-      transform: scale(1.15);
-      z-index: 1;
-    }
+      @media (min-width: 640px) {
+        .row-link {
+          grid-template-columns: auto 1fr auto;
+          column-gap: 6rem;
+          row-gap: 0.25rem;
+          align-items: baseline;
+        }
+        .roles {
+          justify-self: end;
+          text-align: right;
+        }
+        .note {
+          grid-column: 1 / -1;
+          text-align: right;
+          padding-top: 0.125rem;
+        }
+      }
 
-    /* Flying clone */
-    .fly-clone {
-      position: fixed;
-      left: var(--fly-left);
-      top: var(--fly-top);
-      width: var(--fly-width);
-      height: var(--fly-height);
-      pointer-events: none;
-      z-index: 100;
-      transition:
-        left 0.35s cubic-bezier(0.34, 1.10, 0.64, 1),
-        top 0.35s cubic-bezier(0.34, 1.10, 0.64, 1),
-        width 0.35s cubic-bezier(0.34, 1.10, 0.64, 1),
-        height 0.35s cubic-bezier(0.34, 1.10, 0.64, 1);
-    }
-    .fly-cover {
-      border-radius: 2px;
-      overflow: hidden;
-      box-shadow: 0 12px 32px rgba(17, 17, 17, 0.12);
-    }
-    .fly-cover img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-    }
-    .fly-text {
-      display: flex;
-      flex-direction: row;
-      align-items: baseline;
-      gap: 2rem;
-      font-size: var(--text-small);
-      color: var(--color-ink);
-    }
-    .fly-text .clone-date {
-      color: var(--color-muted);
-      font-variant-numeric: tabular-nums;
-      flex-shrink: 0;
-    }
-    .fly-text .clone-head {
-      font-weight: 500;
-    }
-    .fly-text .clone-roles {
-      color: var(--color-muted);
-    }
-  `],
+      /* Grid */
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+        gap: 0.5rem;
+      }
+      .tile {
+        aspect-ratio: 1;
+        position: relative;
+        transition: transform 0.2s ease;
+      }
+      .tile img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+        border-radius: 2px;
+      }
+      .tile.is-active {
+        transform: scale(1.15);
+        z-index: 1;
+      }
+
+      /* Flying clone */
+      .fly-clone {
+        position: fixed;
+        left: var(--fly-left);
+        top: var(--fly-top);
+        width: var(--fly-width);
+        height: var(--fly-height);
+        pointer-events: none;
+        z-index: 100;
+        transition:
+          left 0.35s cubic-bezier(0.34, 1.1, 0.64, 1),
+          top 0.35s cubic-bezier(0.34, 1.1, 0.64, 1),
+          width 0.35s cubic-bezier(0.34, 1.1, 0.64, 1),
+          height 0.35s cubic-bezier(0.34, 1.1, 0.64, 1);
+      }
+      .fly-cover {
+        border-radius: 2px;
+        overflow: hidden;
+        box-shadow: 0 12px 32px rgba(17, 17, 17, 0.12);
+      }
+      .fly-cover img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+      }
+      .fly-text {
+        display: flex;
+        flex-direction: row;
+        align-items: baseline;
+        gap: 2rem;
+        font-size: var(--text-small);
+        color: var(--color-ink);
+      }
+      .fly-text .clone-date {
+        color: var(--color-muted);
+        font-variant-numeric: tabular-nums;
+        flex-shrink: 0;
+      }
+      .fly-text .clone-head {
+        font-weight: 500;
+      }
+      .fly-text .clone-roles {
+        color: var(--color-muted);
+      }
+    `,
+  ],
 })
 export default class LorePage {
   private readonly creditsService = inject(CreditsService);
@@ -294,7 +296,7 @@ export default class LorePage {
 
     const row = event.currentTarget as HTMLElement;
     const tile = this.gridEl?.nativeElement.querySelector(
-      `[data-credit-id="${credit.id}"]`
+      `[data-credit-id="${credit.id}"]`,
     ) as HTMLElement | null;
     if (!tile) return;
 
@@ -312,7 +314,7 @@ export default class LorePage {
       'cover',
       credit,
       { left: tileRect.left, top: tileRect.top, width: tileRect.width, height: tileRect.height },
-      { left: destLeft, top: destTop, width: destWidth, height: destHeight }
+      { left: destLeft, top: destTop, width: destWidth, height: destHeight },
     );
   }
 
@@ -323,7 +325,7 @@ export default class LorePage {
 
     const tile = event.currentTarget as HTMLElement;
     const row = this.listEl?.nativeElement.querySelector(
-      `[data-credit-id="${credit.id}"]`
+      `[data-credit-id="${credit.id}"]`,
     ) as HTMLElement | null;
     if (!row || !this.gridEl || !tile) return;
 
@@ -342,7 +344,7 @@ export default class LorePage {
       'credit-text',
       credit,
       { left: rowRect.left, top: rowRect.top, width: rowRect.width, height: rowRect.height },
-      { left: destLeft, top: destTop, width: destWidth, height: destHeight }
+      { left: destLeft, top: destTop, width: destWidth, height: destHeight },
     );
   }
 
@@ -370,7 +372,7 @@ export default class LorePage {
     kind: FlyingClone['kind'],
     credit: Credit,
     sourceRect: Rect,
-    destRect: Rect
+    destRect: Rect,
   ): void {
     // Render clone at source position first
     this.flyingClone.set({ kind, credit, sourceRect, currentRect: sourceRect });
@@ -378,7 +380,7 @@ export default class LorePage {
     // Then transition to destination on the next paint
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
-        this.flyingClone.update(c => {
+        this.flyingClone.update((c) => {
           if (!c || c.credit.id !== credit.id) return c;
           return { ...c, currentRect: destRect };
         });
