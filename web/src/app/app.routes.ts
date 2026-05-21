@@ -18,5 +18,10 @@ export const routes: Routes = [
     loadComponent: () => import('./features/cart/cart.page'),
     title: '.cart — moye.world',
   },
+  {
+    path: 'cart/success',
+    loadComponent: () => import('./features/cart/checkout-success.page'),
+    title: 'order complete — moye.world',
+  },
   { path: '**', redirectTo: '' },
 ];

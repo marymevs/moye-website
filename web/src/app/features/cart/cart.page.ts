@@ -1,8 +1,11 @@
-import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, ChangeDetectionStrategy, computed, inject, signal } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { CartService } from '../../core/services/cart.service';
+import { CheckoutService } from '../../core/services/checkout.service';
 
 @Component({
   selector: 'app-cart-page',
+  imports: [FormsModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <section class="page">
@@ -47,6 +50,56 @@ import { CartService } from '../../core/services/cart.service';
           <span>total</span>
           <span class="total-amount">\${{ formatPrice(cart.totalCents()) }}</span>
         </div>
+
+        <form class="form" (submit)="onCheckout($event)">
+          <label class="field">
+            <span class="field-label">name</span>
+            <input
+              type="text"
+              autocomplete="name"
+              required
+              [ngModel]="customerName()"
+              (ngModelChange)="customerName.set($event)"
+              name="customerName"
+            />
+          </label>
+          <label class="field">
+            <span class="field-label">email</span>
+            <input
+              type="email"
+              autocomplete="email"
+              required
+              [ngModel]="customerEmail()"
+              (ngModelChange)="customerEmail.set($event)"
+              name="customerEmail"
+            />
+          </label>
+          <label class="checkbox">
+            <input
+              type="checkbox"
+              [ngModel]="newsletterOptIn()"
+              (ngModelChange)="newsletterOptIn.set($event)"
+              name="newsletterOptIn"
+            />
+            <span>add me to the mailing list</span>
+          </label>
+
+          @if (checkoutError(); as err) {
+            <p class="error">{{ err }}</p>
+          }
+
+          <button
+            type="submit"
+            class="checkout"
+            [disabled]="!canCheckout() || isCheckingOut()"
+          >
+            @if (isCheckingOut()) {
+              redirecting…
+            } @else {
+              checkout
+            }
+          </button>
+        </form>
       }
     </section>
   `,
@@ -153,13 +206,125 @@ import { CartService } from '../../core/services/cart.service';
     .total-amount {
       font-variant-numeric: tabular-nums;
     }
+
+    .form {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      margin-top: 2rem;
+      padding-top: 2rem;
+      border-top: 1px solid var(--color-border);
+    }
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 0.375rem;
+    }
+    .field-label {
+      font-size: var(--text-small);
+      color: var(--color-muted);
+    }
+    .field input {
+      font-family: inherit;
+      font-size: var(--text-body);
+      color: var(--color-ink);
+      background: transparent;
+      border: 0;
+      border-bottom: 1px solid var(--color-border);
+      padding: 0.5rem 0;
+      outline: none;
+    }
+    .field input:focus {
+      border-bottom-color: var(--color-ink);
+    }
+    .checkbox {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: var(--text-small);
+      color: var(--color-muted);
+    }
+    .checkbox input { accent-color: var(--color-ink); }
+
+    .error {
+      font-size: var(--text-small);
+      color: #b04a4a;
+      margin: 0;
+    }
+
+    .checkout {
+      align-self: flex-start;
+      background: var(--color-ink);
+      color: var(--color-bg);
+      border: 0;
+      padding: 0.75rem 1.5rem;
+      font-family: inherit;
+      font-size: var(--text-body);
+      font-weight: 500;
+      border-radius: 4px;
+      margin-top: 0.5rem;
+    }
+    .checkout:disabled {
+      opacity: 0.4;
+    }
   `],
 })
 export default class CartPage {
   protected readonly cart = inject(CartService);
+  private readonly checkout = inject(CheckoutService);
+
   protected readonly items = this.cart.items;
+
+  protected readonly customerName = signal('');
+  protected readonly customerEmail = signal('');
+  protected readonly newsletterOptIn = signal(false);
+  protected readonly isCheckingOut = signal(false);
+  protected readonly checkoutError = signal<string | null>(null);
+
+  protected readonly canCheckout = computed(() => {
+    const hasItems = this.items().length > 0;
+    const hasName = this.customerName().trim().length > 0;
+    const hasEmail = this.isValidEmail(this.customerEmail());
+    return hasItems && hasName && hasEmail;
+  });
 
   protected formatPrice(cents: number): string {
     return (cents / 100).toFixed(2);
+  }
+
+  protected async onCheckout(event: Event): Promise<void> {
+    event.preventDefault();
+    if (!this.canCheckout() || this.isCheckingOut()) return;
+
+    this.checkoutError.set(null);
+    this.isCheckingOut.set(true);
+
+    try {
+      const origin = window.location.origin;
+      const result = await this.checkout.startCheckout({
+        items: this.items().map(i => ({ productId: i.productId, qty: i.qty })),
+        customerName: this.customerName().trim(),
+        customerEmail: this.customerEmail().trim(),
+        newsletterOptIn: this.newsletterOptIn(),
+        successUrl: `${origin}/cart/success`,
+        cancelUrl: `${origin}/cart`,
+      });
+      window.location.href = result.url;
+    } catch (err) {
+      console.warn('[Cart] checkout failed:', err);
+      this.checkoutError.set(this.errorMessage(err));
+      this.isCheckingOut.set(false);
+    }
+  }
+
+  private isValidEmail(value: string): boolean {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim());
+  }
+
+  private errorMessage(err: unknown): string {
+    if (err && typeof err === 'object' && 'message' in err && typeof (err as { message: unknown }).message === 'string') {
+      return (err as { message: string }).message;
+    }
+    return 'Checkout failed. Try again or contact us.';
   }
 }
