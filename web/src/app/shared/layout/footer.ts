@@ -8,11 +8,9 @@ import { ContactService } from '../../core/services/contact.service';
  * have a SoundCloud presence, set SOCIALS.soundcloud = null).
  */
 const SOCIALS = {
-  twitter: 'https://x.com/moye',
   instagram: 'https://www.instagram.com/moye_p/',
-  youtube: 'https://youtube.com/@moye',
-  soundcloud: 'https://soundcloud.com/moye_p',
   threads: 'https://www.threads.com/@moye_p',
+  soundcloud: 'https://soundcloud.com/moye_p',
 } as const;
 
 @Component({
@@ -25,22 +23,6 @@ const SOCIALS = {
         <button class="link" type="button" (click)="contact.open()">contact</button>
       </div>
       <div class="socials">
-        @if (socials.twitter) {
-          <a [href]="socials.twitter" target="_blank" rel="noopener" aria-label="Twitter">
-            <svg
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="1.75"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              aria-hidden="true"
-            >
-              <path d="M4 4l11.733 16h4.267l-11.733 -16z" />
-              <path d="M4 20l6.768 -6.768m2.46 -2.46l6.772 -6.772" />
-            </svg>
-          </a>
-        }
         @if (socials.instagram) {
           <a [href]="socials.instagram" target="_blank" rel="noopener" aria-label="Instagram">
             <svg
@@ -58,8 +40,8 @@ const SOCIALS = {
             </svg>
           </a>
         }
-        @if (socials.youtube) {
-          <a [href]="socials.youtube" target="_blank" rel="noopener" aria-label="YouTube">
+        @if (socials.threads) {
+          <a [href]="socials.threads" target="_blank" rel="noopener" aria-label="Threads">
             <svg
               viewBox="0 0 24 24"
               fill="none"
@@ -69,14 +51,8 @@ const SOCIALS = {
               stroke-linejoin="round"
               aria-hidden="true"
             >
-              <path
-                d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.25 29 29 0 0 0-.46-5.33z"
-              />
-              <polygon
-                points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02"
-                fill="currentColor"
-                stroke="none"
-              />
+              <path d="M19 7.5c-1.333 -2.333 -3.333 -3.5 -6 -3.5c-4 0 -7 2.667 -7 8s3 8 7 8c3.5 0 5.5 -1.5 6 -4.5" />
+              <path d="M15.5 9.5c-1.667 0 -3 1.333 -3 3v.5c0 1.667 1 3 3 3c2 0 3 -1 3 -3c0 -1.5 -1 -3 -3 -3z" />
             </svg>
           </a>
         }
