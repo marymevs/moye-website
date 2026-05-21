@@ -60,11 +60,28 @@ export class MailingListService {
         { merge: true }
       );
     } catch (err) {
-      // The mailing_list rule allows `create` but denies `update`. If the
-      // email already exists (e.g. visitor previously opted in via checkout
-      // newsletter, or submitted via the popup before), setDoc is treated as
-      // an update and gets permission-denied. Treat that as success — they're
-      // already subscribed, no further work needed. Surface any other error.
+      // Why we treat permission-denied as success here — by elimination:
+      //
+      //   The `mailing_list/{email}` rule:
+      //     allow create: if true     // always permitted
+      //     allow update: if false    // always denied
+      //     allow read, delete: if false
+      //
+      //   This service only ever calls `setDoc()`. setDoc resolves to either
+      //   create (when the doc doesn't exist) or update (when it does).
+      //   create can't trigger permission-denied (the rule allows it
+      //   unconditionally). So if we receive permission-denied, the only
+      //   possible cause is "doc already existed and setDoc became an
+      //   update" — meaning the email is already in the collection (e.g.
+      //   visitor opted in via the Stripe checkout newsletter previously,
+      //   or already submitted the popup). They're already subscribed;
+      //   silently succeeding is the right UX.
+      //
+      // ⚠️  If you add ANY other Firestore call to this service (a getDoc,
+      // a transaction, anything that could trigger a different rule), this
+      // reasoning breaks. Either tighten this catch to specifically check
+      // that the error originated from the setDoc call, or revisit the rule
+      // design so updates are allowed with field-level constraints.
       if (this.isPermissionDenied(err)) return;
       throw err;
     }
