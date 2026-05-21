@@ -46,7 +46,10 @@ export class AudioPlayerService {
     if (audio.src !== track.audioUrl) {
       audio.src = track.audioUrl;
     }
-    audio.play().catch(err => {
+    // audio.play() returns a Promise in real browsers but can return
+    // undefined in some test environments (jsdom). Promise.resolve()
+    // normalizes both cases so the catch always works.
+    Promise.resolve(audio.play()).catch(err => {
       console.warn('[AudioPlayer] play() rejected:', err);
       this.isPlaying.set(false);
     });
@@ -59,7 +62,7 @@ export class AudioPlayerService {
   toggle(): void {
     if (!this.audio || !this.currentTrack()) return;
     if (this.audio.paused) {
-      this.audio.play().catch(err => {
+      Promise.resolve(this.audio.play()).catch(err => {
         console.warn('[AudioPlayer] play() rejected:', err);
         this.isPlaying.set(false);
       });
