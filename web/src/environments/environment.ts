@@ -8,6 +8,7 @@ export const environment = {
     projectId: 'moye-website',
     storageBucket: 'moye-website.firebasestorage.app',
     messagingSenderId: '778921622672',
-    appId: 'G-SMVWFKSVPN',
+    measurementId: 'G-SMVWFKSVPN',
+    appId: '1:778921622672:web:c0d20126e9b599bbc12c15',
   },
 };
