@@ -16,3 +16,6 @@ scripts/node_modules/
 
 # Claude 
 .claude
+
+# Secrets
+.env

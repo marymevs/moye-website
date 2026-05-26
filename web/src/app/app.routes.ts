@@ -23,5 +23,15 @@ export const routes: Routes = [
     loadComponent: () => import('./features/cart/checkout-success.page'),
     title: 'order complete — moye.world',
   },
+  {
+    path: APP_ROUTES.privacy,
+    loadComponent: () => import('./features/legal/privacy.page'),
+    title: '.privacy — moye.world',
+  },
+  {
+    path: APP_ROUTES.terms,
+    loadComponent: () => import('./features/legal/terms.page'),
+    title: '.terms — moye.world',
+  },
   { path: '**', redirectTo: '' },
 ];
