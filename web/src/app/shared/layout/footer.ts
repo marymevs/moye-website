@@ -25,6 +25,7 @@ const SOCIALS = {
         <button class="link" type="button" (click)="mailingList.open()">join the list</button>
         <button class="link" type="button" (click)="contact.open()">contact</button>
         <a class="link" [routerLink]="privacyPath">privacy</a>
+        <a class="link" [routerLink]="termsPath">terms</a>
       </div>
       <div class="socials">
         @if (socials.instagram) {
@@ -142,4 +143,5 @@ export class FooterComponent {
   protected readonly socials = SOCIALS;
   protected readonly year = new Date().getFullYear();
   protected readonly privacyPath = `/${APP_ROUTES.privacy}`;
+  protected readonly termsPath = `/${APP_ROUTES.terms}`;
 }
