@@ -1,6 +1,8 @@
 import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { MailingListService } from '../../core/services/mailing-list.service';
 import { ContactService } from '../../core/services/contact.service';
+import { APP_ROUTES } from '../../core/constants/app-routes';
 
 /**
  * Social URLs. Swap the handles for moye's real accounts. Set a
@@ -16,11 +18,13 @@ const SOCIALS = {
 @Component({
   selector: 'app-footer',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [RouterLink],
   template: `
     <footer class="footer">
       <div class="links">
         <button class="link" type="button" (click)="mailingList.open()">join the list</button>
         <button class="link" type="button" (click)="contact.open()">contact</button>
+        <a class="link" [routerLink]="privacyPath">privacy</a>
       </div>
       <div class="socials">
         @if (socials.instagram) {
@@ -137,4 +141,5 @@ export class FooterComponent {
   protected readonly contact = inject(ContactService);
   protected readonly socials = SOCIALS;
   protected readonly year = new Date().getFullYear();
+  protected readonly privacyPath = `/${APP_ROUTES.privacy}`;
 }

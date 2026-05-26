@@ -2,6 +2,7 @@ export const APP_ROUTES = {
   home: '',
   lore: 'lore',
   cart: 'cart',
+  privacy: 'privacy',
 } as const;
 
 export type AppRouteKey = keyof typeof APP_ROUTES;
