@@ -3,6 +3,7 @@ import { getFirestore, FieldValue } from 'firebase-admin/firestore';
 import { onCall, onRequest, HttpsError } from 'firebase-functions/v2/https';
 import { defineSecret } from 'firebase-functions/params';
 import Stripe from 'stripe';
+import { Resend } from 'resend';
 import { z } from 'zod';
 
 initializeApp();
@@ -10,8 +11,14 @@ const db = getFirestore();
 
 const stripeSecretKey = defineSecret('STRIPE_SECRET_KEY');
 const stripeWebhookSecret = defineSecret('STRIPE_WEBHOOK_SECRET');
+const resendApiKey = defineSecret('RESEND_API_KEY');
 
 const REGION = 'us-central1';
+
+// Resend requires a verified-domain "from" address before going live.
+// Until the moye.world domain is verified, this can stay as Resend's
+// onboarding sandbox address (only deliverable to the account owner's email).
+const ORDER_FROM_EMAIL = 'moye.world <onboarding@resend.dev>';
 
 const CheckoutInput = z.object({
   items: z
@@ -98,11 +105,17 @@ export const createCheckoutSession = onCall(
       });
     }
 
+    // Append Stripe's session-id template so the success page knows which
+    // order to confirm. Stripe substitutes `{CHECKOUT_SESSION_ID}` before
+    // redirecting the buyer.
+    const successUrlWithSession =
+      successUrl + (successUrl.includes('?') ? '&' : '?') + 'session_id={CHECKOUT_SESSION_ID}';
+
     const stripe = new Stripe(stripeSecretKey.value());
     const session = await stripe.checkout.sessions.create({
       mode: 'payment',
       line_items: lineItems,
-      success_url: successUrl,
+      success_url: successUrlWithSession,
       cancel_url: cancelUrl,
       customer_email: customerEmail,
     });
@@ -205,6 +218,99 @@ export const stripeWebhook = onRequest(
     }
 
     res.status(200).send('ok');
+  }
+);
+
+const OrderConfirmationInput = z.object({
+  sessionId: z.string().min(1).max(200),
+});
+
+interface OrderDoc {
+  status?: string;
+  items?: Array<{ productId: string; title: string; priceCents: number; qty: number }>;
+  customer?: { name?: string; email?: string };
+  confirmationEmailSent?: boolean;
+}
+
+/**
+ * Sends an order-confirmation email via Resend, looking up order
+ * details from `orders/{sessionId}`. Marks the order as
+ * `confirmationEmailSent` to prevent duplicate sends on page refresh.
+ *
+ * NOTE: This intentionally does NOT verify that payment succeeded —
+ * it sends as long as the order doc exists. See GitHub issue for
+ * "Gate order confirmation email on verified payment" — that ticket
+ * tracks moving this to the webhook handler (or adding a
+ * `status === 'paid'` check) once we've validated the flow end-to-end.
+ */
+export const sendOrderConfirmationEmail = onCall(
+  { region: REGION, secrets: [resendApiKey] },
+  async request => {
+    const parsed = OrderConfirmationInput.safeParse(request.data);
+    if (!parsed.success) {
+      throw new HttpsError('invalid-argument', 'Invalid input', parsed.error.flatten());
+    }
+    const { sessionId } = parsed.data;
+
+    const ref = db.collection('orders').doc(sessionId);
+    const snap = await ref.get();
+    if (!snap.exists) {
+      throw new HttpsError('not-found', 'Order not found');
+    }
+    const order = snap.data() as OrderDoc;
+
+    if (order.confirmationEmailSent) {
+      return { ok: true, alreadySent: true };
+    }
+
+    const email = order.customer?.email;
+    const name = order.customer?.name ?? 'friend';
+    const items = order.items ?? [];
+    if (!email || items.length === 0) {
+      throw new HttpsError('failed-precondition', 'Order is missing customer or items');
+    }
+
+    const totalCents = items.reduce((sum, it) => sum + it.priceCents * it.qty, 0);
+    const formatPrice = (cents: number): string => `$${(cents / 100).toFixed(2)}`;
+    const itemLines = items
+      .map(it => `  - ${it.title} × ${it.qty} — ${formatPrice(it.priceCents * it.qty)}`)
+      .join('\n');
+
+    const textBody = [
+      `thanks, ${name}.`,
+      '',
+      `your order is in. here's what you got:`,
+      itemLines,
+      '',
+      `total: ${formatPrice(totalCents)}`,
+      '',
+      `we'll send tracking info once it ships.`,
+      '',
+      `— moye`,
+    ].join('\n');
+
+    const resend = new Resend(resendApiKey.value());
+    try {
+      await resend.emails.send({
+        from: ORDER_FROM_EMAIL,
+        to: email,
+        subject: 'your moye.world order',
+        text: textBody,
+      });
+    } catch (err) {
+      console.error('[sendOrderConfirmationEmail] resend failed:', err);
+      throw new HttpsError('internal', 'Failed to send confirmation email');
+    }
+
+    await ref.set(
+      {
+        confirmationEmailSent: true,
+        confirmationEmailSentAt: FieldValue.serverTimestamp(),
+      },
+      { merge: true }
+    );
+
+    return { ok: true };
   }
 );
 

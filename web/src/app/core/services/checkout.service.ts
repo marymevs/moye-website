@@ -30,9 +30,17 @@ export class CheckoutService {
     this.functions,
     'createCheckoutSession'
   );
+  private readonly sendConfirmationCallable = httpsCallable<
+    { sessionId: string },
+    { ok: boolean; alreadySent?: boolean }
+  >(this.functions, 'sendOrderConfirmationEmail');
 
   async startCheckout(input: CheckoutInput): Promise<CheckoutResult> {
     const result = await this.callable(input);
     return result.data;
+  }
+
+  async sendOrderConfirmation(sessionId: string): Promise<void> {
+    await this.sendConfirmationCallable({ sessionId });
   }
 }
